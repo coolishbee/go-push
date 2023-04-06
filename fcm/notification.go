@@ -9,9 +9,9 @@ import (
 )
 
 type PushClient struct {
-	fcmClient  *fcm.Client
-	fcmMessage *fcm.Message
-	pushTokens []string
+	FcmClient  *fcm.Client
+	FcmMessage *fcm.Message
+	PushTokens []string
 }
 
 type PushResponse struct {
@@ -30,8 +30,8 @@ func NewFromAPIKey(apiKey string) (*PushClient, error) {
 	}
 
 	pushClient := &PushClient{
-		fcmClient:  client,
-		fcmMessage: msg,
+		FcmClient:  client,
+		FcmMessage: msg,
 	}
 	return pushClient, nil
 }
@@ -44,10 +44,10 @@ func (c *PushClient) Send() (resp *PushResponse) {
 	var j int
 	var wg sync.WaitGroup
 
-	for i := 0; i < len(c.pushTokens); i += count {
+	for i := 0; i < len(c.PushTokens); i += count {
 		j += count
-		if j > len(c.pushTokens) {
-			j = len(c.pushTokens)
+		if j > len(c.PushTokens) {
+			j = len(c.PushTokens)
 		}
 		fmt.Printf("i : %d j : %d\n", i, j)
 		//fmt.Println(Tokens[i:j])
@@ -57,7 +57,7 @@ func (c *PushClient) Send() (resp *PushResponse) {
 			fmt.Println(token)
 			fcmMessage.RegistrationIDs = token
 			//fcmMessage.To = token
-			res, err := c.fcmClient.Send(&fcmMessage)
+			res, err := c.FcmClient.Send(&fcmMessage)
 			if err != nil {
 				log.Fatalln(err)
 			}
@@ -78,7 +78,7 @@ func (c *PushClient) Send() (resp *PushResponse) {
 
 			wg.Done()
 
-		}(*c.fcmMessage, c.pushTokens[i:j])
+		}(*c.FcmMessage, c.PushTokens[i:j])
 	}
 
 	wg.Wait()

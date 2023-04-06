@@ -19,9 +19,9 @@ func TestFCM(t *testing.T) {
 		t.Error(err)
 	}
 
-	pushClient.pushTokens = pushTokens
-	pushClient.fcmMessage.Notification.Title = "title"
-	pushClient.fcmMessage.Notification.Body = "body"
+	pushClient.PushTokens = pushTokens
+	pushClient.FcmMessage.Notification.Title = "title11"
+	pushClient.FcmMessage.Notification.Body = "body11"
 
 	resp := pushClient.Send()
 	fmt.Printf("Success: %d\n", resp.Success)

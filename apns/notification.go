@@ -12,9 +12,9 @@ import (
 )
 
 type PushClient struct {
-	apnsClient       *apns2.Client
-	apnsNotification *apns2.Notification
-	deviceTokens     []string
+	ApnsClient       *apns2.Client
+	ApnsNotification *apns2.Notification
+	DeviceTokens     []string
 }
 
 type PushResponse struct {
@@ -72,8 +72,8 @@ func NewFromKeyBytes(
 	notification.Payload = payload
 
 	pushClient := &PushClient{
-		apnsClient:       client,
-		apnsNotification: notification,
+		ApnsClient:       client,
+		ApnsNotification: notification,
 	}
 	return pushClient, nil
 }
@@ -83,12 +83,12 @@ func (c *PushClient) Send() (resp *PushResponse) {
 	resp = &PushResponse{}
 
 	var wg sync.WaitGroup
-	for _, token := range c.deviceTokens {
+	for _, token := range c.DeviceTokens {
 		wg.Add(1)
 		go func(notification apns2.Notification, token string) {
 			notification.DeviceToken = token
 
-			res, err := c.apnsClient.Push(&notification)
+			res, err := c.ApnsClient.Push(&notification)
 			if err != nil {
 				log.Println("There was an error", err)
 				return
@@ -104,7 +104,7 @@ func (c *PushClient) Send() (resp *PushResponse) {
 
 			wg.Done()
 
-		}(*c.apnsNotification, token)
+		}(*c.ApnsNotification, token)
 	}
 	wg.Wait()
 

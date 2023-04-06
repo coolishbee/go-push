@@ -13,13 +13,13 @@ func TestAPNS(t *testing.T) {
 	pushClient, err := NewFromKeyFile(
 		keyFilePath,
 		"",
-		"", "title", "body", false)
+		"", "title11", "body11", false)
 
 	if err != nil {
 		t.Error(err)
 	}
-	pushClient.deviceTokens = deviceTokens
-	pushClient.apnsNotification.Topic = "bundleid"
+	pushClient.DeviceTokens = deviceTokens
+	pushClient.ApnsNotification.Topic = "bundleid"
 	resp := pushClient.Send()
 	fmt.Printf("Success: %d\n", resp.Success)
 	fmt.Printf("Failure: %d\n", resp.Failure)
