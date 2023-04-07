@@ -12,14 +12,16 @@ type PushClient struct {
 	FcmClient  *fcm.Client
 	FcmMessage *fcm.Message
 	PushTokens []string
+	Identifier int
 }
 
 type PushResponse struct {
-	Success int
-	Failure int
+	Success    int
+	Failure    int
+	Identifier int
 }
 
-func NewFromAPIKey(apiKey string) (*PushClient, error) {
+func NewFromAPIKey(apiKey string, id int) (*PushClient, error) {
 	msg := &fcm.Message{
 		Notification: &fcm.Notification{},
 	}
@@ -32,6 +34,7 @@ func NewFromAPIKey(apiKey string) (*PushClient, error) {
 	pushClient := &PushClient{
 		FcmClient:  client,
 		FcmMessage: msg,
+		Identifier: id,
 	}
 	return pushClient, nil
 }
@@ -39,6 +42,7 @@ func NewFromAPIKey(apiKey string) (*PushClient, error) {
 func (c *PushClient) Send() (resp *PushResponse) {
 
 	resp = &PushResponse{}
+	resp.Identifier = c.Identifier
 
 	count := 1000
 	var j int
@@ -49,12 +53,12 @@ func (c *PushClient) Send() (resp *PushResponse) {
 		if j > len(c.PushTokens) {
 			j = len(c.PushTokens)
 		}
-		fmt.Printf("i : %d j : %d\n", i, j)
+		//fmt.Printf("i : %d j : %d\n", i, j)
 		//fmt.Println(Tokens[i:j])
 
 		wg.Add(1)
 		go func(fcmMessage fcm.Message, token []string) {
-			fmt.Println(token)
+			//fmt.Println(token)
 			fcmMessage.RegistrationIDs = token
 			//fcmMessage.To = token
 			res, err := c.FcmClient.Send(&fcmMessage)
@@ -73,8 +77,8 @@ func (c *PushClient) Send() (resp *PushResponse) {
 					fmt.Println(result.Error)
 					continue
 				}
-				fmt.Println("Succeeded")
 			}
+			//fmt.Println("Succeeded: ", res.MulticastID)
 
 			wg.Done()
 

@@ -15,11 +15,13 @@ type PushClient struct {
 	ApnsClient       *apns2.Client
 	ApnsNotification *apns2.Notification
 	DeviceTokens     []string
+	Identifier       int
 }
 
 type PushResponse struct {
-	Success int
-	Failure int
+	Success    int
+	Failure    int
+	Identifier int
 }
 
 func NewFromKeyFile(
@@ -29,12 +31,13 @@ func NewFromKeyFile(
 	title string,
 	body string,
 	production bool,
+	id int,
 ) (*PushClient, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return NewFromKeyBytes(bytes, keyId, teamId, title, body, production)
+	return NewFromKeyBytes(bytes, keyId, teamId, title, body, production, id)
 }
 
 func NewFromKeyBytes(
@@ -44,6 +47,7 @@ func NewFromKeyBytes(
 	title string,
 	body string,
 	production bool,
+	id int,
 ) (*PushClient, error) {
 	authKey, err := token.AuthKeyFromBytes(bytes)
 	if err != nil {
@@ -74,6 +78,7 @@ func NewFromKeyBytes(
 	pushClient := &PushClient{
 		ApnsClient:       client,
 		ApnsNotification: notification,
+		Identifier:       id,
 	}
 	return pushClient, nil
 }
@@ -81,6 +86,7 @@ func NewFromKeyBytes(
 func (c *PushClient) Send() (resp *PushResponse) {
 
 	resp = &PushResponse{}
+	resp.Identifier = c.Identifier
 
 	var wg sync.WaitGroup
 	for _, token := range c.DeviceTokens {
