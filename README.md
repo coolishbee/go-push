@@ -35,9 +35,9 @@ func main() {
 	}
 
     resp := pushClient.Send()
-	fmt.Printf("Success: %d\n", resp.Success)
-	fmt.Printf("Failure: %d\n", resp.Failure)
-	fmt.Printf("Identifier: %d\n", resp.Identifier)
+    fmt.Printf("Success: %d\n", resp.Success)
+    fmt.Printf("Failure: %d\n", resp.Failure)
+    fmt.Printf("Identifier: %d\n", resp.Identifier)
 }
 ```
 
@@ -62,8 +62,8 @@ func main() {
     pushClient.ApnsNotification.Topic = "bundleIdentifier"
     resp := pushClient.Send()
     fmt.Printf("Success: %d\n", resp.Success)
-	fmt.Printf("Failure: %d\n", resp.Failure)
-	fmt.Printf("Identifier: %d\n", resp.Identifier)
+    fmt.Printf("Failure: %d\n", resp.Failure)
+    fmt.Printf("Identifier: %d\n", resp.Identifier)
 }
 ```
 
